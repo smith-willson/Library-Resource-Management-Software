@@ -6,9 +6,12 @@
 #include <vector>
 #include "Resources.h"
 #include "Users.h"
+
 using namespace std;
 
-class Admin
+// Administrative manager class for handling reports and resource management.
+// Renamed to avoid clashing with the user-role Admin defined in Users.h.
+class AdminManager
 {
 private:
     string password;
@@ -17,49 +20,32 @@ protected:
     int adminID;
     string username;
     string name;
-    static int idCounter; // shared counter to auto-generate unique IDs
+
+    static int idCounter;
 
 public:
-    // default constructor
-    Admin() : adminID(++idCounter), username(""), password(""), name("") {}
+    AdminManager();
 
-    // parameterized constructor
-    Admin(string name, string username, string password)
-    {
-        this->name = name;
-        this->username = username;
-        this->password = password;
-        adminID = ++idCounter;
-    }
+    AdminManager(string name, string username, string password);
 
-    // getters
-    int getAdminID() const { return adminID; }
-    string getUsername() const { return username; }
-    string getName() const { return name; }
+    int getAdminID() const;
+    string getUsername() const;
+    string getName() const;
 
-    // setters
-    void setName(string n) { name = n; }
-    void setUsername(string u) { username = u; }
-    void setPassword(string p) { password = p; }
+    void setName(string n);
+    void setUsername(string u);
+    void setPassword(string p);
 
-    bool login(string user, string pass)
-    {
-        return (username == user && password == pass);
-    }
+    bool login(string user, string pass);
 
-    // print report of all customers and their borrowing history
-    void printAllCustomersReport(vector<User *> &users);
+    void printAllCustomersReport(vector<User*> &users);
 
-    // add, update, remove resources
-    void addResource(vector<LibraryResource *> &resources);
-    void removeResource(vector<LibraryResource *> &resources);
-    void updateResource(vector<LibraryResource *> &resources);
+    void addResource(vector<LibraryResource*> &resources);
+    void removeResource(vector<LibraryResource*> &resources);
+    void updateResource(vector<LibraryResource*> &resources);
 
-    // print currently issued and overdue resources
-    void printIssuedResources(vector<LibraryResource *> &resources);
-    void printOverdueResources(vector<LibraryResource *> &resources);
+    void printIssuedResources(vector<LibraryResource*> &resources);
+    void printOverdueResources(vector<LibraryResource*> &resources);
 };
 
-int Admin::idCounter = 0;
-
-#endif // ADMIN_H
+#endif
