@@ -16,13 +16,12 @@ protected:
     string availabilityStatus; // "Available", "Partially available", "Borrowed"
     int totalCopies;
     int availableCopies;
-    static int idCounter; // shared counter to auto-generate unique IDs
 
 public:
     // default constructor
     LibraryResource()
     {
-        resourceID = ++idCounter;
+        resourceID = 0;
         title = "Unknown";
         authorCreator = "Unknown";
         category = "General";
@@ -32,9 +31,9 @@ public:
     }
 
     // parameterized constructor, ID still auto-assigned
-    LibraryResource(string title, string authorCreator, string category, int totalCopies)
+    LibraryResource(int ID, string title, string authorCreator, string category, int totalCopies)
     {
-        resourceID = ++idCounter;
+        resourceID = ID;
         this->title = title;
         this->authorCreator = authorCreator;
         this->category = category;
@@ -103,9 +102,6 @@ public:
     virtual ~LibraryResource() {}
 };
 
-// start IDs from 1 (inline to avoid multiple definitions across translation units)
-inline int LibraryResource::idCounter = 0;
-
 // Derived class for physical books
 class Book : public LibraryResource
 {
@@ -124,9 +120,9 @@ public:
     }
 
     // parameterized constructor
-    Book(string title, string author, string category,
+    Book(int ID, string title, string author, string category,
          int totalCopies, string ISBN, string publisher, int year)
-        : LibraryResource(title, author, category, totalCopies)
+        : LibraryResource(ID, title, author, category, totalCopies)
     {
         this->ISBN = ISBN;
         this->publisher = publisher;
@@ -176,9 +172,9 @@ public:
     }
 
     // parameterized constructor
-    DVD(string title, string director, string category,
+    DVD(int ID, string title, string director, string category,
         int totalCopies, int duration, string genre)
-        : LibraryResource(title, director, category, totalCopies)
+        : LibraryResource(ID, title, director, category, totalCopies)
     {
         this->director = director;
         this->durationMinutes = duration;
@@ -227,9 +223,9 @@ public:
     }
 
     // parameterized constructor
-    AudioBook(string title, string author, string category,
+    AudioBook(int ID, string title, string author, string category,
               int totalCopies, string narrator, int duration, string format)
-        : LibraryResource(title, author, category, totalCopies)
+        : LibraryResource(ID, title, author, category, totalCopies)
     {
         this->narrator = narrator;
         this->durationMinutes = duration;
@@ -281,9 +277,9 @@ public:
     }
 
     // parameterized constructor
-    Magazine(string title, string publisher, string category,
+    Magazine(int ID, string title, string publisher, string category,
              int totalCopies, int volume, int issue, string pubDate)
-        : LibraryResource(title, publisher, category, totalCopies)
+        : LibraryResource(ID, title, publisher, category, totalCopies)
     {
         this->volumeNumber = volume;
         this->issueNumber = issue;
@@ -318,58 +314,6 @@ public:
     }
 };
 
-// Derived class for digital books, copies set to 999 since its a digital resource
-class EBook : public LibraryResource
-{
-private:
-    string fileFormat; // PDF, EPUB, MOBI etc.
-    string accessLink;
-    string digitalISBN;
-
-public:
-    // default constructor
-    EBook() : LibraryResource()
-    {
-        fileFormat = "PDF";
-        accessLink = "N/A";
-        digitalISBN = "000-0000000000";
-        totalCopies = 999;
-        availableCopies = 999;
-    }
-
-    // no totalCopies parameter since ebooks have unlimited copies
-    EBook(string title, string author, string category,
-          string fileFormat, string accessLink, string digitalISBN)
-        : LibraryResource(title, author, category, 999)
-    {
-        this->fileFormat = fileFormat;
-        this->accessLink = accessLink;
-        this->digitalISBN = digitalISBN;
-    }
-
-    // getters
-    string getFileFormat() const { return fileFormat; }
-    string getAccessLink() const { return accessLink; }
-    string getDigitalISBN() const { return digitalISBN; }
-
-    // setters
-    void setFileFormat(string f) { fileFormat = f; }
-    void setAccessLink(string l) { accessLink = l; }
-    void setDigitalISBN(string d) { digitalISBN = d; }
-
-    void displayInfo() override
-    {
-        cout << "Resource ID  : " << resourceID << endl;
-        cout << "Title        : " << title << endl;
-        cout << "Author       : " << authorCreator << endl;
-        cout << "Category     : " << category << endl;
-        cout << "File Format  : " << fileFormat << endl;
-        cout << "Digital ISBN : " << digitalISBN << endl;
-        cout << "Access Link  : " << accessLink << endl;
-        cout << "Status       : " << availabilityStatus << endl;
-    }
-};
-
 // Derived class for daily or weekly newspapers
 class Newspaper : public LibraryResource
 {
@@ -388,9 +332,9 @@ public:
     }
 
     // parameterized constructor
-    Newspaper(string title, string publisher, string category,
+    Newspaper(int ID, string title, string publisher, string category,
               int totalCopies, string editionDate, string region)
-        : LibraryResource(title, publisher, category, totalCopies)
+        : LibraryResource(ID, title, publisher, category, totalCopies)
     {
         this->editionDate = editionDate;
         this->region = region;
