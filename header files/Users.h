@@ -5,7 +5,7 @@
 #include <string>
 using namespace std;
 
-class Library; // Forward declaration for Library interactions
+class Library;         // Forward declaration for Library interactions
 
 // --------------------- Base User Class ---------------------
 class User
@@ -13,10 +13,10 @@ class User
 protected:
 
     int userID;
+    string type;       // Stores derived class type: "student", "teacher", "staff", "premium", "admin"
     string username;
     string password;
-    string firstName;
-    string lastName;
+    string name;
     string address;
     double balance;
 
@@ -25,31 +25,31 @@ public:
     User()
     {
         userID = 0;
+        type = "unknown";
         username = "Unknown";
         password = "123";
-        firstName = "Unknown";
-        lastName = "Unknown";
+        name = "Unknown";
         address = "Unknown";
         balance = 0.0;
     }
 
-    User(int ID, string username, string password,
-         string firstName, string lastName,
-         string address, double balance)
+    User(int ID, string type, string username, string password,
+         string name, string address, double balance)
     {
         userID = ID;
+        this->type = type;
         this->username = username;
         this->password = password;
-        this->firstName = firstName;
-        this->lastName = lastName;
+        this->name = name;
         this->address = address;
         this->balance = balance;
     }
 
     // ---------- Getters ----------
     int getUserID() const { return userID; }
+    string getType() const { return type; }
     string getUsername() const { return username; }
-    string getFullName() const { return firstName + " " + lastName; }
+    string getName() const { return name; }
     double getBalance() const { return balance; }
 
     // ---------- Setters ----------
@@ -84,15 +84,15 @@ public:
     // ---------- Constructors ----------
     Student() : User()
     {
+        type = "student";
         department = "Unknown";
         rollNo = 0;
     }
 
     Student(int ID, string username, string password,
-            string firstName, string lastName,
-            string address, double balance,
+            string name, string address, double balance,
             string department, int rollNo)
-        : User(ID, username, password, firstName, lastName, address, balance)
+        : User(ID, "student", username, password, name, address, balance)
     {
         this->department = department;
         this->rollNo = rollNo;
@@ -106,7 +106,7 @@ public:
     void displayInfo() const override
     {
         cout << "ID: " << userID << endl;
-        cout << "Name: " << getFullName() << endl;
+        cout << "Name: " << name << endl;
         cout << "Role: Student" << endl;
         cout << "Department: " << department << endl;
         cout << "Roll No: " << rollNo << endl;
@@ -124,15 +124,15 @@ public:
     // ---------- Constructors ----------
     Teacher() : User()
     {
+        type = "teacher";
         department = "Unknown";
         designation = "Unknown";
     }
 
     Teacher(int ID, string username, string password,
-            string firstName, string lastName,
-            string address, double balance,
+            string name, string address, double balance,
             string department, string designation)
-        : User(ID, username, password, firstName, lastName, address, balance)
+        : User(ID, "teacher", username, password, name, address, balance)
     {
         this->department = department;
         this->designation = designation;
@@ -146,7 +146,7 @@ public:
     void displayInfo() const override
     {
         cout << "ID: " << userID << endl;
-        cout << "Name: " << getFullName() << endl;
+        cout << "Name: " << name << endl;
         cout << "Role: Teacher" << endl;
         cout << "Department: " << department << endl;
         cout << "Designation: " << designation << endl;
@@ -161,13 +161,16 @@ class Staff : public User
 
 public:
     // ---------- Constructors ----------
-    Staff() : User() { position = "Unknown"; }
+    Staff() : User() 
+    { 
+        type = "staff";
+        position = "Unknown"; 
+    }
 
     Staff(int ID, string username, string password,
-          string firstName, string lastName,
-          string address, double balance,
+          string name, string address, double balance,
           string position)
-        : User(ID, username, password, firstName, lastName, address, balance)
+        : User(ID, "staff", username, password, name, address, balance)
     {
         this->position = position;
     }
@@ -180,7 +183,7 @@ public:
     void displayInfo() const override
     {
         cout << "ID: " << userID << endl;
-        cout << "Name: " << getFullName() << endl;
+        cout << "Name: " << name << endl;
         cout << "Role: Staff" << endl;
         cout << "Position: " << position << endl;
         cout << "Balance: " << balance << endl;
@@ -194,13 +197,16 @@ class PremiumMember : public User
 
 public:
     // ---------- Constructors ----------
-    PremiumMember() : User() { membershipLevel = "Gold"; }
+    PremiumMember() : User() 
+    { 
+        type = "premium";
+        membershipLevel = "Gold"; 
+    }
 
     PremiumMember(int ID, string username, string password,
-                  string firstName, string lastName,
-                  string address, double balance,
+                  string name, string address, double balance,
                   string level)
-        : User(ID, username, password, firstName, lastName, address, balance)
+        : User(ID, "premium", username, password, name, address, balance)
     {
         membershipLevel = level;
     }
@@ -213,7 +219,7 @@ public:
     void displayInfo() const override
     {
         cout << "ID: " << userID << endl;
-        cout << "Name: " << getFullName() << endl;
+        cout << "Name: " << name << endl;
         cout << "Role: Premium Member" << endl;
         cout << "Membership Level: " << membershipLevel << endl;
         cout << "Balance: " << balance << endl;

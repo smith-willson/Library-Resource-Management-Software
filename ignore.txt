@@ -1,0 +1,14 @@
+CSV Columns for users.txt
+
+userID
+type
+username
+password
+name
+address
+balance
+department
+rollNo
+designation
+position
+membershipLevel

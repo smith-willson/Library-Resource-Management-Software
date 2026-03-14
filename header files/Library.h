@@ -9,46 +9,49 @@
 #include "Users.h"
 using namespace std;
 
-// --------------------- Borrow Record ---------------------
-struct BorrowRecord
-{
-    LibraryResource *resource; // Pointer to borrowed resource
-    time_t borrowDate;
-    time_t dueDate;
-    time_t returnDate;
-    double fine;
-
-    BorrowRecord(LibraryResource *res, int durationDays)
-        : resource(res), fine(0.0), returnDate(0)
-    {
-        borrowDate = time(0);
-        dueDate = borrowDate + durationDays * 24 * 60 * 60;
-    }
-
-    // Mark resource as returned and calculate fine if overdue
-    void markReturned(User *user)
-    {
-        returnDate = time(0);
-        if (difftime(returnDate, dueDate) > 0)
-        {
-            int daysLate = static_cast<int>(difftime(returnDate, dueDate) / (60 * 60 * 24));
-            fine = daysLate * user->getFineRate();
-            user->updateBalance(-fine);
-        }
-    }
-};
-
-// --------------------- Library Class ---------------------
+// Manages all library operations — resources, users, and borrowing
 class Library
 {
 private:
+
+    // Tracks a single borrowing transaction
+    struct BorrowRecord
+    {
+        int userID;                  // who borrowed
+        LibraryResource *resource;   // what was borrowed
+        time_t borrowDate;
+        time_t dueDate;
+        time_t returnDate;           // 0 if not yet returned
+        double fine;
+
+        // calculates due date from borrow duration
+        BorrowRecord(int uid, LibraryResource *res, int durationDays)
+            : userID(uid), resource(res), fine(0.0), returnDate(0)
+        {
+            borrowDate = time(0);
+            dueDate = borrowDate + durationDays * 24 * 60 * 60;
+        }
+
+        // marks returned and deducts fine if overdue
+        void markReturned(User *user)
+        {
+            returnDate = time(0);
+            if (difftime(returnDate, dueDate) > 0)
+            {
+                int daysLate = static_cast<int>(difftime(returnDate, dueDate) / (60 * 60 * 24));
+                fine = daysLate * user->getFineRate();
+                user->updateBalance(-fine);
+            }
+        }
+    };
+
     string libraryName;
-    vector<LibraryResource *> resources; // All resources
-    vector<User *> users;                // All users
-    vector<BorrowRecord> borrowHistory;  // Tracks all borrowings
+    vector<LibraryResource *> resources;  // all resources
+    vector<User *> users;                 // all registered users
+    vector<BorrowRecord> borrowHistory;   // full borrow history
 
 public:
-    // ---------- Constructor ----------
+    // vectors start empty, FileHandler fills them from CSV
     Library(string name) : libraryName(name) {}
 
     // ---------- Resource Management ----------
@@ -86,61 +89,63 @@ public:
     }
 
     // ---------- Borrowing Logic ----------
+
+    // checks daily limit and availability before borrowing
     bool borrowResource(User *user, LibraryResource *res, int durationDays = 10)
     {
-        // Daily limit enforcement
-        int dailyLimit = user->getDailyLimit();
         int countToday = 0;
-
         time_t now = time(0);
+
+        // count active borrows by this user in last 24 hours
         for (auto &record : borrowHistory)
         {
-            if (record.resource && record.borrowDate >= now - 24 * 60 * 60 && record.resource)
+            if (record.userID == user->getUserID() &&
+                record.returnDate == 0 &&
+                difftime(now, record.borrowDate) <= 24 * 60 * 60)
             {
-                // Count only active borrowings of this user today
-                if (record.returnDate == 0 && user->getUserID() == record.resource->getResourceID())
-                    countToday++;
+                countToday++;
             }
         }
 
-        if (countToday >= dailyLimit)
+        if (countToday >= user->getDailyLimit())
         {
-            cout << user->getName() << " has reached the daily borrow limit of " << dailyLimit << " resources.\n";
+            cout << user->getName() << " has reached the daily borrow limit of "
+                 << user->getDailyLimit() << " resources.\n";
             return false;
         }
 
-        // Check availability
         if (!res->isAvailable())
         {
             cout << "Resource \"" << res->getTitle() << "\" is not available.\n";
             return false;
         }
 
-        // Borrow resource
         res->borrowResource();
-        BorrowRecord record(res, durationDays);
-        borrowHistory.push_back(record);
+        borrowHistory.push_back(BorrowRecord(user->getUserID(), res, durationDays));
 
         cout << user->getName() << " successfully borrowed \"" << res->getTitle() << "\".\n";
         return true;
     }
 
     // ---------- Returning Logic ----------
+
+    // finds active borrow record and marks it returned
     bool returnResource(User *user, LibraryResource *res)
     {
         for (auto &record : borrowHistory)
         {
-            if (record.resource == res && record.returnDate == 0)
+            if (record.userID == user->getUserID() &&
+                record.resource == res &&
+                record.returnDate == 0)
             {
-                // Mark as returned
                 record.markReturned(user);
                 res->returnResource();
+
                 cout << user->getName() << " returned \"" << res->getTitle() << "\".\n";
 
                 if (record.fine > 0)
-                {
                     cout << "Overdue! Fine of " << record.fine << " applied.\n";
-                }
+
                 return true;
             }
         }
@@ -153,20 +158,29 @@ public:
     void showBorrowHistory() const
     {
         cout << "\nBorrow History:\n";
-        for (auto record : borrowHistory)
+        for (auto &record : borrowHistory)
         {
-            cout << "Resource: " << record.resource->getTitle()
-                 << ", Borrowed: " << ctime(&record.borrowDate);
+            cout << "Resource : " << record.resource->getTitle() << endl;
+            cout << "Borrowed : " << ctime(&record.borrowDate);
+
             if (record.returnDate != 0)
-                cout << ", Returned: " << ctime(&record.returnDate)
-                     << ", Fine: " << record.fine << endl;
+            {
+                cout << "Returned : " << ctime(&record.returnDate);
+                cout << "Fine     : " << record.fine << endl;
+            }
             else
-                cout << ", Not Returned Yet\n";
+                cout << "Status   : Not Returned Yet\n";
+
+            cout << "-----------------------\n";
         }
     }
 
     // ---------- Getters ----------
+    // return by reference so FileHandler can fill vectors directly
     string getLibraryName() const { return libraryName; }
+    vector<User *> &getUsers() { return users; }
+    vector<LibraryResource *> &getResources() { return resources; }
+    vector<BorrowRecord> &getBorrowHistory() { return borrowHistory; }
 };
 
 #endif

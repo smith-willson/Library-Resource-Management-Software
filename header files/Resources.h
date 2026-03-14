@@ -10,10 +10,11 @@ class LibraryResource
 {
 protected:
     int resourceID;
+    string type;           // Stores derived class type: "book", "dvd", "audiobook", "magazine", "newspaper"
     string title;
     string authorCreator;
     string category;
-    string availabilityStatus; // "Available", "Partially available", "Borrowed"
+    string availabilityStatus; // "Available", "Partially Available", "Borrowed"
     int totalCopies;
     int availableCopies;
 
@@ -22,6 +23,7 @@ public:
     LibraryResource()
     {
         resourceID = 0;
+        type = "unknown";
         title = "Unknown";
         authorCreator = "Unknown";
         category = "General";
@@ -30,10 +32,11 @@ public:
         availabilityStatus = "Available";
     }
 
-    // parameterized constructor, ID still auto-assigned
-    LibraryResource(int ID, string title, string authorCreator, string category, int totalCopies)
+    // parameterized constructor
+    LibraryResource(int ID, string type, string title, string authorCreator, string category, int totalCopies)
     {
         resourceID = ID;
+        this->type = type;
         this->title = title;
         this->authorCreator = authorCreator;
         this->category = category;
@@ -44,6 +47,7 @@ public:
 
     // getters
     int getResourceID() const { return resourceID; }
+    string getType() const { return type; }
     string getTitle() const { return title; }
     string getAuthorCreator() const { return authorCreator; }
     string getCategory() const { return category; }
@@ -114,6 +118,7 @@ public:
     // default constructor
     Book() : LibraryResource()
     {
+        type = "book";
         ISBN = "000-0000000000";
         publisher = "Unknown";
         yearPublished = 0;
@@ -122,7 +127,7 @@ public:
     // parameterized constructor
     Book(int ID, string title, string author, string category,
          int totalCopies, string ISBN, string publisher, int year)
-        : LibraryResource(ID, title, author, category, totalCopies)
+        : LibraryResource(ID, "book", title, author, category, totalCopies)
     {
         this->ISBN = ISBN;
         this->publisher = publisher;
@@ -166,6 +171,7 @@ public:
     // default constructor
     DVD() : LibraryResource()
     {
+        type = "dvd";
         director = "Unknown";
         durationMinutes = 0;
         genre = "Unknown";
@@ -174,7 +180,7 @@ public:
     // parameterized constructor
     DVD(int ID, string title, string director, string category,
         int totalCopies, int duration, string genre)
-        : LibraryResource(ID, title, director, category, totalCopies)
+        : LibraryResource(ID, "dvd", title, director, category, totalCopies)
     {
         this->director = director;
         this->durationMinutes = duration;
@@ -217,6 +223,7 @@ public:
     // default constructor
     AudioBook() : LibraryResource()
     {
+        type = "audiobook";
         narrator = "Unknown";
         durationMinutes = 0;
         format = "MP3";
@@ -225,7 +232,7 @@ public:
     // parameterized constructor
     AudioBook(int ID, string title, string author, string category,
               int totalCopies, string narrator, int duration, string format)
-        : LibraryResource(ID, title, author, category, totalCopies)
+        : LibraryResource(ID, "audiobook", title, author, category, totalCopies)
     {
         this->narrator = narrator;
         this->durationMinutes = duration;
@@ -270,6 +277,7 @@ public:
     // default constructor
     Magazine() : LibraryResource()
     {
+        type = "magazine";
         volumeNumber = 1;
         issueNumber = 1;
         publisher = "Unknown";
@@ -279,7 +287,7 @@ public:
     // parameterized constructor
     Magazine(int ID, string title, string publisher, string category,
              int totalCopies, int volume, int issue, string pubDate)
-        : LibraryResource(ID, title, publisher, category, totalCopies)
+        : LibraryResource(ID, "magazine", title, publisher, category, totalCopies)
     {
         this->volumeNumber = volume;
         this->issueNumber = issue;
@@ -326,6 +334,7 @@ public:
     // default constructor
     Newspaper() : LibraryResource()
     {
+        type = "newspaper";
         editionDate = "Unknown";
         region = "Unknown";
         publisher = "Unknown";
@@ -334,7 +343,7 @@ public:
     // parameterized constructor
     Newspaper(int ID, string title, string publisher, string category,
               int totalCopies, string editionDate, string region)
-        : LibraryResource(ID, title, publisher, category, totalCopies)
+        : LibraryResource(ID, "newspaper", title, publisher, category, totalCopies)
     {
         this->editionDate = editionDate;
         this->region = region;
