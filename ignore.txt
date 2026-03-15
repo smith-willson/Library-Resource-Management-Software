@@ -1,4 +1,4 @@
-CSV Columns for users.txt
+CSV Columns of users.csv
 
 userID
 type
@@ -12,3 +12,27 @@ rollNo
 designation
 position
 membershipLevel
+
+CSV Columns of resources.h
+
+resourceID
+type
+title
+authorCreator
+category
+totalCopies
+availableCopies
+availabilityStatus
+ISBN
+publisher
+yearPublished
+director
+durationMinutes
+genre
+narrator
+format
+volumeNumber
+issueNumber
+publicationDate
+editionDate
+region
