@@ -1,7 +1,10 @@
 #include <iostream>
+#include "include/Library.h"
+#include "FileHandling/FileHandler.h"
 using namespace std;
+
 int main()
 {
-    cout << "Why? " << endl;
+
     return 0;
 }

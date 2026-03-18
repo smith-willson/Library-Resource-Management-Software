@@ -1,4 +1,4 @@
-#include "users.h"
+#include "Users.h"
 #include <iostream>
 using namespace std;
 
@@ -34,6 +34,9 @@ string User::getType() const { return type; }
 string User::getUsername() const { return username; }
 string User::getName() const { return name; }
 double User::getBalance() const { return balance; }
+string User::getAddress() const { return address; }
+string User::getPassword() const { return password; }
+
 
 // ---------- Setters ----------
 void User::setAddress(const string &addr) { address = addr; }

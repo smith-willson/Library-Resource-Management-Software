@@ -13,7 +13,6 @@ using namespace std;
 class Library
 {
 private:
-
     // Tracks a single borrowing transaction
     struct BorrowRecord
     {
@@ -21,7 +20,7 @@ private:
         LibraryResource *resource; // what was borrowed
         time_t borrowDate;
         time_t dueDate;
-        time_t returnDate;         // 0 if not yet returned
+        time_t returnDate; // 0 if not yet returned
         double fine;
 
         // calculates due date from borrow duration
@@ -50,7 +49,7 @@ public:
 
     // ---------- Borrowing Logic ----------
     bool borrowResource(User *user, LibraryResource *res, int durationDays = 10); // checks daily limit and availability before borrowing
-    
+
     // ---------- Returning Logic ----------
     bool returnResource(User *user, LibraryResource *res); // finds active borrow record and marks it returned
 

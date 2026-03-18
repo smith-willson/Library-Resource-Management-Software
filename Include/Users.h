@@ -31,6 +31,8 @@ public:
     string getUsername() const;
     string getName() const;
     double getBalance() const;
+    string getAddress() const;
+    string getPassword() const;
 
     // ---------- Setters ----------
     void setAddress(const string &addr);

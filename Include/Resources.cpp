@@ -1,4 +1,4 @@
-#include "resources.h"
+#include "Resources.h"
 #include <iostream>
 using namespace std;
 
