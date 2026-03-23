@@ -5,14 +5,12 @@
 #include <string>
 using namespace std;
 
-class Library; // Forward declaration for Library interactions
-
 // --------------------- Base User Class ---------------------
 class User
 {
 protected:
     int userID;
-    string type;      // Stores derived class type: "student", "teacher", "staff", "premium"
+    string type;      // "student", "teacher", "staff", "premium"
     string username;
     string password;
     string name;
@@ -37,18 +35,15 @@ public:
     // ---------- Setters ----------
     void setAddress(const string &addr);
     void setPassword(const string &pass);
-    void updateBalance(double amount); // Positive or negative
+    void updateBalance(double amount); // positive to add, negative to deduct
 
     // ---------- Authentication ----------
     bool login(string user, string pass);
 
-    // ---------- Role-based Borrowing ----------
-    virtual int getDailyLimit() const = 0;  // Max resources per day
-    virtual double getFineRate() const = 0; // Fine per overdue day
-
-    // ---------- Library Interaction ----------
-    bool borrowResource(Library &lib, int resourceID); // Borrow resource via library
-    bool returnResource(Library &lib, int resourceID); // Return resource via library
+    // ---------- Role-based Rules ----------
+    virtual int getDailyLimit() const = 0;   // max resources per day — differs by type
+    virtual double getFineRate() const = 0;  // fine per overdue day — differs by type
+    virtual int getBorrowDays() const = 0;   // max days to keep resource — differs by type
 
     // ---------- Display ----------
     virtual void displayInfo() const = 0;
@@ -74,8 +69,9 @@ public:
     int getRollNo() const;
 
     // ---------- Role Rules ----------
-    int getDailyLimit() const override;  // Max 2 resources/day
-    double getFineRate() const override; // Fine per overdue day
+    int getDailyLimit() const override;   // max 2 resources/day
+    double getFineRate() const override;  // 10 per overdue day
+    int getBorrowDays() const override;   // 7 days to return
 
     // ---------- Display ----------
     void displayInfo() const override;
@@ -99,8 +95,9 @@ public:
     string getDesignation() const;
 
     // ---------- Role Rules ----------
-    int getDailyLimit() const override;  // Max 3 resources/day
-    double getFineRate() const override; // Fine per overdue day
+    int getDailyLimit() const override;   // max 3 resources/day
+    double getFineRate() const override;  // 20 per overdue day
+    int getBorrowDays() const override;   // 14 days to return
 
     // ---------- Display ----------
     void displayInfo() const override;
@@ -122,8 +119,9 @@ public:
     string getPosition() const;
 
     // ---------- Role Rules ----------
-    int getDailyLimit() const override;  // Max 4 resources/day
-    double getFineRate() const override; // Fine per overdue day
+    int getDailyLimit() const override;   // max 4 resources/day
+    double getFineRate() const override;  // 5 per overdue day
+    int getBorrowDays() const override;   // 14 days to return
 
     // ---------- Display ----------
     void displayInfo() const override;
@@ -145,8 +143,9 @@ public:
     string getMembershipLevel() const;
 
     // ---------- Role Rules ----------
-    int getDailyLimit() const override;  // Max 5 resources/day
-    double getFineRate() const override; // Fine per overdue day
+    int getDailyLimit() const override;   // max 5 resources/day
+    double getFineRate() const override;  // 3 per overdue day
+    int getBorrowDays() const override;   // 30 days to return
 
     // ---------- Display ----------
     void displayInfo() const override;

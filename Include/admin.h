@@ -3,11 +3,10 @@
 
 #include <iostream>
 #include <string>
-#include <vector>
 #include "Users.h"
 using namespace std;
 
-class LibraryResource; // Forward declaration for resource operations
+class Library; // forward declaration — admin interacts with library
 
 // --------------------- Admin Class ---------------------
 class Admin : public User
@@ -19,16 +18,20 @@ public:
           string name, string address, double balance);
 
     // ---------- Role Rules ----------
-    int getDailyLimit() const override;    // Admin does not borrow
-    double getFineRate() const override;   // No fines for admin
+    int getDailyLimit() const override;   // admin does not borrow
+    double getFineRate() const override;  // no fines for admin
+    int getBorrowDays() const override;   // admin does not borrow
 
     // ---------- Admin Operations ----------
-    void printAllCustomersReport(vector<User *> &users);              // Report of all users and history
-    void addResource(vector<LibraryResource *> &resources);           // Add new resource
-    void removeResource(vector<LibraryResource *> &resources);        // Remove existing resource
-    void updateResource(vector<LibraryResource *> &resources);        // Update resource details
-    void printIssuedResources(vector<LibraryResource *> &resources);  // Currently issued
-    void printOverdueResources(vector<LibraryResource *> &resources); // Overdue resources
+    void printAllCustomersReport(Library &lib);                       // report of all users and borrow history
+    void addResource(Library &lib);                                   // add new resource to library
+    void removeResource(Library &lib);                                // remove existing resource
+    void updateResource(Library &lib);                                // update resource details
+    void printIssuedResources(Library &lib);                          // currently issued resources
+    void printOverdueResources(Library &lib);                         // overdue resources
+    void generateStats(Library &lib);                                 // library statistics
+    void exportReports(Library &lib, const string &filename);         // export report to file
+    void fineManagement(Library &lib);                                // view all user balances and fines
 
     // ---------- Display ----------
     void displayInfo() const override;
