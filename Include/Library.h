@@ -44,8 +44,14 @@ public:
     void addResource(LibraryResource *res);
     void showResources() const;
 
+    // ---------- addition: show only available resources ----------
+    void showAvailableResources() const;
+
     // ---------- User Management ----------
     void addUser(User *user);
+
+    // ---------- addition: create user account from input ----------
+    void registerUser();
 
     // ---------- Borrowing Logic ----------
     bool borrowResource(User *user, LibraryResource *res); // duration comes from user type
@@ -55,6 +61,9 @@ public:
 
     // ---------- Borrow History ----------
     void showBorrowHistory() const;
+
+    // ---------- addition: search resources ----------
+    vector<LibraryResource *> searchResources(const string &keyword) const;
 
     // ---------- Getters ----------
     string getLibraryName() const;
